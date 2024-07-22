@@ -34,6 +34,24 @@ func TestEnum_Parse(t *testing.T) {
 	is.Equal(parsed, nil)
 }
 
+func TestEnum_String(t *testing.T) {
+	is := is.New(t)
+	is.Equal(Colors.String(), "red, green, blue")
+}
+
+func TestEnum_MarshalText(t *testing.T) {
+	is := is.New(t)
+	for _, color := range Colors.Members() {
+		bytes, err := enum.Member[string]{Value: color.Value}.MarshalText()
+		is.NoErr(err)
+		is.Equal(string(bytes), color.Value)
+	}
+
+	bytes, err := Colors.MarshalText()
+	is.NoErr(err)
+	is.Equal(string(bytes), "red, green, blue")
+}
+
 func TestEnum_Empty(t *testing.T) {
 	is := is.New(t)
 	is.True(!Colors.Empty())

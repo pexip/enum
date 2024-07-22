@@ -30,6 +30,14 @@ type iMember[T comparable] interface {
 	~struct{ Value T }
 }
 
+func (m Member[T]) String() string {
+	return fmt.Sprintf("%v", m.Value)
+}
+
+func (m Member[T]) MarshalText() ([]byte, error) {
+	return []byte(m.String()), nil
+}
+
 // Enum is a collection of enum members.
 //
 // Use [New] to construct a new Enum from a list of members.
@@ -154,6 +162,10 @@ func (e Enum[M, V]) GoString() string {
 	}
 	joined := strings.Join(values, ", ")
 	return fmt.Sprintf("enum.New(%s)", joined)
+}
+
+func (e Enum[M, V]) MarshalText() ([]byte, error) {
+	return []byte(e.String()), nil
 }
 
 // Parse is like [Enum.Parse] but finds the member for the value using [Equaler] comparator.
